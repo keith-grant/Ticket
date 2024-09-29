@@ -1,47 +1,72 @@
 <script lang="ts">
-  import svelteLogo from './assets/svelte.svg'
-  import viteLogo from '/vite.svg'
-  import Counter from './lib/Counter.svelte'
+  import { tickets } from './data.js';
+  import Ticket from './lib/Ticket.svelte';
+
+  let selectedTicket = null;
+
+  function selectTicket(ticket) {
+    selectedTicket = ticket;
+  }
 </script>
 
-<main>
-  <div>
-    <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-      <img src={viteLogo} class="logo" alt="Vite Logo" />
-    </a>
-    <a href="https://svelte.dev" target="_blank" rel="noreferrer">
-      <img src={svelteLogo} class="logo svelte" alt="Svelte Logo" />
-    </a>
+<main class="container">
+  <h1>Ticketing System</h1>
+
+  <div class="grid">
+    <div>
+      <h2>Tickets</h2>
+      <ul class="list">
+        {#each tickets as ticket}
+          <li class="ticket-item" on:click={() => selectTicket(ticket)}>
+            <article>
+              <header>
+                <strong>{ticket.fields.title.value}</strong> - Status: {ticket
+                  .fields.status.value}
+              </header>
+            </article>
+          </li>
+        {/each}
+      </ul>
+    </div>
+
+    {#if selectedTicket}
+      <div class="ticket-details">
+        <Ticket ticket={selectedTicket} />
+      </div>
+    {/if}
   </div>
-  <h1>Vite + Svelte</h1>
-
-  <div class="card">
-    <Counter />
-  </div>
-
-  <p>
-    Check out <a href="https://github.com/sveltejs/kit#readme" target="_blank" rel="noreferrer">SvelteKit</a>, the official Svelte app framework powered by Vite!
-  </p>
-
-  <p class="read-the-docs">
-    Click on the Vite and Svelte logos to learn more
-  </p>
 </main>
 
 <style>
-  .logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
-    transition: filter 300ms;
+  .ticket-item {
+    cursor: pointer;
+    padding: 0.5rem;
+    border: 1px solid var(--card-border-color);
+    margin-bottom: 0.5rem;
+    border-radius: var(--radius);
+    background: var(--card-background);
+    transition: background-color 0.2s;
   }
-  .logo:hover {
-    filter: drop-shadow(0 0 2em #646cffaa);
+
+  .ticket-item:hover {
+    background-color: var(--muted-background-hover);
   }
-  .logo.svelte:hover {
-    filter: drop-shadow(0 0 2em #ff3e00aa);
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    gap: 1rem;
   }
-  .read-the-docs {
-    color: #888;
+
+  .ticket-details {
+    padding: 1rem;
+    background: var(--card-background);
+    border: 1px solid var(--card-border-color);
+    border-radius: var(--radius);
+  }
+
+  .list {
+    padding: 0;
+    list-style: none;
   }
 </style>
